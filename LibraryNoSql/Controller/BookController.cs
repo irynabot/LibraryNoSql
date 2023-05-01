@@ -2,10 +2,8 @@
 using LibraryNoSql.Model;
 using LibraryNoSql.Repository;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LibraryNoSql.Controller
 {
@@ -51,7 +49,7 @@ namespace LibraryNoSql.Controller
 
         [HttpGet]
         [Route("getById")]
-        public IActionResult GetById(Guid bookId)
+        public IActionResult GetById(ObjectId bookId)
         {
             var dbBook = bookRepository.GetById(bookId);
             return Ok(dbBook);
@@ -59,7 +57,7 @@ namespace LibraryNoSql.Controller
 
         [HttpDelete]
         [Route("deleteById")]
-        public IActionResult DeleteById(Guid bookId)
+        public IActionResult DeleteById(ObjectId bookId)
         {
             bookRepository.Delete(bookId);
             return Ok();
@@ -67,11 +65,11 @@ namespace LibraryNoSql.Controller
 
         [HttpPut]
         [Route("give")]
-        public IActionResult GiveBookToUser(Guid bookId, Guid userId)
+        public IActionResult GiveBookToUser(GiveBookToUserApiModel giveBookToUserApiModel)
         {
             try
             {
-                bookRepository.GiveBookToUser(bookId, userId);
+                bookRepository.GiveBookToUser(giveBookToUserApiModel.bookId, giveBookToUserApiModel.userId);
             }
             catch (Exception ex)
             {
@@ -83,7 +81,7 @@ namespace LibraryNoSql.Controller
 
         [HttpPut]
         [Route("retrieve")]
-        public IActionResult RetrieveBookFromUser(Guid bookId)
+        public IActionResult RetrieveBookFromUser(ObjectId bookId)
         {
             try
             {

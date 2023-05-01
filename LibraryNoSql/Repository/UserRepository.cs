@@ -7,6 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace LibraryNoSql.Repository
 {
@@ -14,8 +17,7 @@ namespace LibraryNoSql.Repository
         private readonly IMongoCollection<User> collection;
         public UserRepository(IConfiguration configuration)
         {
-            var connString =
-           configuration.GetConnectionString("MongoDBConnection");
+            var connString = configuration.GetConnectionString("MongoDBConnection");
             collection = new MongoClient(connString)
             .GetDatabase("LibraryDB")
             .GetCollection<User>("User");
@@ -26,7 +28,7 @@ namespace LibraryNoSql.Repository
             if (existingUser != null)
                 throw new Exception("User with same login already exists");
     
-            user.Id = Guid.NewGuid();
+            user.Id = ObjectId.GenerateNewId();
             user.Password = HashPassword(user.Password);
             collection.InsertOne(user);
             return user;
@@ -45,7 +47,7 @@ namespace LibraryNoSql.Repository
             .Find(x => true)
            .ToList();
         }
-        public User GetById(Guid id)
+        public User GetById(ObjectId id)
         {
             return collection
             .Find(x => x.Id == id)

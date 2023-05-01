@@ -29,7 +29,7 @@ namespace LibraryNoSql.Repository
         }
         public Book Insert(Book book)
         {
-            book.Id = Guid.NewGuid();
+            book.Id = ObjectId.GenerateNewId();
             bookCollection.InsertOne(book);
             return book;
         }
@@ -39,7 +39,7 @@ namespace LibraryNoSql.Repository
             .Find(x => x.GivenToUserId == userId)
             .ToList();
         }
-        public Book GetById(Guid id)
+        public Book GetById(ObjectId id)
         {
             return bookCollection
             .Find(x => x.Id == id)
@@ -51,11 +51,11 @@ namespace LibraryNoSql.Repository
             .Find(x => true)
             .ToList();
         }
-        public void Delete(Guid bookId)
+        public void Delete(ObjectId bookId)
         {
             bookCollection.DeleteOne((x) => x.Id == bookId);
         }
-        public Book GiveBookToUser(Guid bookId, Guid userId)
+        public Book GiveBookToUser(ObjectId bookId, ObjectId userId)
         {
             var book = GetById(bookId);
             if (book == null)
@@ -74,7 +74,7 @@ namespace LibraryNoSql.Repository
             var result = bookCollection.UpdateOne(filter, update);
             return book;
         }
-        public Book RetrieveBookFromUser(Guid bookId)
+        public Book RetrieveBookFromUser(ObjectId bookId)
         {
             var book = GetById(bookId);
             if (book == null)
